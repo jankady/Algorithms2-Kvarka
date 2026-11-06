@@ -1,66 +1,10 @@
 #include <iostream>
 
+#include "Program.h"
+
+
 using namespace std;
 
-struct Macro {
-    int opcode; // operacni kod nove makroinstrukce
-    int first; // prvni nahrazovana instrukce
-    int second; // druha nahrazovana instrukce
-};
-
-void process(vector<int> &program, vector<Macro> &macros) {
-    if (program.empty()) return;
-    // Najdi nejvyssi pouzity kod instrukce v programu
-    int nextOpcode = program[0];
-    for (int i = 1; i < (int) program.size(); i++) {
-        if (program[i] > nextOpcode) nextOpcode = program[i];
-    }
-    // Predpoklad vstupu: je mozne pridelovat dalsi kody bez preteceni int.
-    nextOpcode++;
-    while (program.size() >= 2) {
-        // 1. Spocitani cetnosti vsech dvojic po sobe jdoucich instrukci
-        vector<vector<int> > counts(nextOpcode + 1, vector<int>(nextOpcode + 1, 0));
-        for (int i = 0; i + 1 < (int) program.size(); i++) {
-            counts[program[i]][program[i + 1]]++;
-        }
-
-        // 2. Vyber nejcastejsi dvojice
-        int bestCount = 0;
-        int bestOpcode = 0;
-        int bestOpcode2 = 0;
-        for (int i = 0; i <= nextOpcode; i++) {
-            for (int j = 0; j <= nextOpcode; j++) {
-                if (counts[i][j] > bestCount) {
-                    bestCount = counts[i][j];
-                    bestOpcode = i;
-                    bestOpcode2 = j;
-                }
-            }
-        }
-        if (bestCount < 2) break;
-
-        // 3. Ulozeni definice nove makroinstrukce
-        Macro macro;
-        macro.opcode = nextOpcode;
-        macro.first = bestOpcode;
-        macro.second = bestOpcode2;
-        macros.push_back(macro);
-
-        // 4. Vytvoreni noveho programu
-        vector<int> result;
-        for (int i = 0; i < (int) program.size();) {
-            if (i + 1 < (int) program.size() && program[i] == bestOpcode && program[i + 1] == bestOpcode2) {
-                result.push_back(nextOpcode);
-                i += 2;
-            } else {
-                result.push_back(program[i]);
-                i++;
-            }
-        }
-        program = result; // puvodni program se zahodi
-        nextOpcode++;
-    }
-}
 
 // Generuje testovaci program s nahodnymi instrukcemi v rozsahu minOpcode a maxOpcode
 vector<int> generateTestInstructions(int minOpcode, int maxOpcode, int programSize) {
@@ -71,5 +15,21 @@ vector<int> generateTestInstructions(int minOpcode, int maxOpcode, int programSi
     return program;
 }
 
+void printInstructions(vector<int> program, vector<Macro> macros) {
+    cout << "Makroinstrukce:\n";
+    for (int i = 0; i < (int) macros.size(); i++) {
+        cout << macros[i].opcode << "-> " << macros[i].first << " " << macros[i].second << std::endl;
+    }
+    cout << "Program:\n";
+    for (int i = 0; i < (int) program.size(); i++) { cout << program[i] << " "; }
+    cout << std::endl;
+}
+
 int main() {
+    vector<int> myLittleProgram = generateTestInstructions(1, 8, 15);
+    vector<Macro> myMacros;
+    Program *myProgram = new Program();
+    printInstructions(myLittleProgram, myMacros);
+    myProgram->process_deprecated(myLittleProgram, myMacros);
+    printInstructions(myLittleProgram, myMacros);
 }
