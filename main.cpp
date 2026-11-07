@@ -30,6 +30,9 @@ int main() {
     vector<Macro> myMacros;
     Program *myProgram = new Program();
     printInstructions(myLittleProgram, myMacros);
-    myProgram->process_deprecated(myLittleProgram, myMacros);
-    printInstructions(myLittleProgram, myMacros);
+    // myProgram->processDeprecated(myLittleProgram, myMacros);
+    // printInstructions(myLittleProgram, myMacros);
+
+    myProgram->processEfficient(myLittleProgram, myMacros);
+
 }

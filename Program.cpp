@@ -1,5 +1,6 @@
 #include "Program.h"
 
+#include <iostream>
 #include <unordered_map>
 #include <vector>
 
@@ -62,14 +63,24 @@ void Program::processDeprecated(vector<int> &program, vector<Macro> &macros) {
     }
 }
 
-void Program::initProgram(unordered_map<size_t, int> hashMap, vector<int> &program, int* biggestOpCode) {
+// Time complexity O(n) depends on program length
+void Program::initProgram(unordered_map<size_t, int> *hashMap, vector<int> &program, int *biggestOpCode) {
     for (int i = 0; i < program.size() - 1; i++) {
         int firstNum = program[i];
-        int secondNum = program[i+1];
+        int secondNum = program[i + 1];
         if (firstNum > *biggestOpCode) *biggestOpCode = firstNum;
         if (secondNum > *biggestOpCode) *biggestOpCode = secondNum;
-        size_t neighboursHash = MyHash::getKeyFromPairs(firstNum,secondNum);
-        hashMap[neighboursHash]++;
+        const uint64_t neighboursHash = MyHash::getKeyFromPairs(firstNum, secondNum);
+        (*hashMap)[neighboursHash]++;
+    }
+}
+
+void testPrint(unordered_map<size_t, int> hashmap, int nextOpCode) {
+    std::cout << "nextOpCode: " << nextOpCode << std::endl;
+    for (const auto &entry: hashmap) {
+        int k1 = MyHash::getFirst(entry.first);
+        int k2 = MyHash::getSecond(entry.first);
+        std::cout << "key=(" << k1 << "," << k2 << ") count=" << entry.second << std::endl;
     }
 }
 
@@ -77,7 +88,8 @@ void Program::processEfficient(vector<int> &program, vector<Macro> &macros) {
     if (program.size() < 2) return;
     int nextOpCode = 0;
     unordered_map<size_t, int> hashmap;
-    initProgram(hashmap, program, &nextOpCode);
+    initProgram(&hashmap, program, &nextOpCode); // O(n)
+    testPrint(hashmap, nextOpCode);
 
 
 }
