@@ -15,7 +15,7 @@ vector<int> generateTestInstructions(int minOpcode, int maxOpcode, int programSi
     return program;
 }
 
-void printInstructions(vector<int> program, vector<Macro> macros) {
+void printInstructions(const vector<int> &program, const vector<Macro> &macros) {
     cout << "Makroinstrukce:\n";
     for (int i = 0; i < (int) macros.size(); i++) {
         cout << macros[i].opcode << "-> " << macros[i].first << " " << macros[i].second << std::endl;
@@ -26,7 +26,7 @@ void printInstructions(vector<int> program, vector<Macro> macros) {
 }
 
 int main() {
-    vector<int> myLittleProgram = generateTestInstructions(1, 8, 15);
+    vector<int> myLittleProgram = generateTestInstructions(1, 5, 15);
     vector<Macro> myMacros;
     Program *myProgram = new Program();
     printInstructions(myLittleProgram, myMacros);

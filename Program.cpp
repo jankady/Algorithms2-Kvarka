@@ -1,12 +1,14 @@
 #include "Program.h"
 
+#include <unordered_map>
 #include <vector>
 
 #include "Macro.h"
+#include "MyHash.h"
 
 using namespace std;
 
-void Program::process_deprecated(vector<int> &program, vector<Macro> &macros) {
+void Program::processDeprecated(vector<int> &program, vector<Macro> &macros) {
     if (program.empty()) return;
     // Najdi nejvyssi pouzity kod instrukce v programu
     int nextOpcode = program[0];
@@ -38,7 +40,7 @@ void Program::process_deprecated(vector<int> &program, vector<Macro> &macros) {
         if (bestCount < 2) break;
 
         // 3. Ulozeni definice nove makroinstrukce
-        Macro* macro = new Macro();
+        Macro *macro = new Macro();
         macro->opcode = nextOpcode;
         macro->first = bestOpcode;
         macro->second = bestOpcode2;
@@ -58,4 +60,24 @@ void Program::process_deprecated(vector<int> &program, vector<Macro> &macros) {
         program = result; // puvodni program se zahodi
         nextOpcode++;
     }
+}
+
+void Program::initProgram(unordered_map<size_t, int> hashMap, vector<int> &program, int* biggestOpCode) {
+    for (int i = 0; i < program.size() - 1; i++) {
+        int firstNum = program[i];
+        int secondNum = program[i+1];
+        if (firstNum > *biggestOpCode) *biggestOpCode = firstNum;
+        if (secondNum > *biggestOpCode) *biggestOpCode = secondNum;
+        size_t neighboursHash = MyHash::getKeyFromPairs(firstNum,secondNum);
+        hashMap[neighboursHash]++;
+    }
+}
+
+void Program::processEfficient(vector<int> &program, vector<Macro> &macros) {
+    if (program.size() < 2) return;
+    int nextOpCode = 0;
+    unordered_map<size_t, int> hashmap;
+    initProgram(hashmap, program, &nextOpCode);
+
+
 }

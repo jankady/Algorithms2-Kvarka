@@ -4,6 +4,7 @@
 
 #ifndef ALG2PROJEKT_PROGRAM_H
 #define ALG2PROJEKT_PROGRAM_H
+#include <unordered_map>
 #include <vector>
 
 #include "Macro.h"
@@ -12,10 +13,11 @@
 class Program {
 
 private:
+    void initProgram(std::unordered_map<size_t, int> hashMap, std::vector<int> &program, int* nextOpCode);
 
 public:
-    void process_deprecated(std::vector<int> &program, std::vector<Macro> &macros);
-    void process_efficient(std::vector<int> &program, std::vector<Macro> &macros);
+    void processDeprecated(std::vector<int> &program, std::vector<Macro> &macros);
+    void processEfficient(std::vector<int> &program, std::vector<Macro> &macros);
 };
 
 

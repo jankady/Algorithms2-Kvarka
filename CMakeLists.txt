@@ -6,4 +6,6 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(alg2Projekt main.cpp
         Program.cpp
         Program.h
-        Macro.h)
+        Macro.h
+        MyHash.cpp
+        MyHash.h)
