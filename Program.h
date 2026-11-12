@@ -14,6 +14,7 @@ class Program {
 
 private:
     void initProgram(std::unordered_map<size_t, int> *hashMap, std::vector<int> &program, int* nextOpCode);
+    std::pair<unsigned long, int> findMax(const std::unordered_map<size_t, int> &hashmap);
 
 public:
     void processDeprecated(std::vector<int> &program, std::vector<Macro> &macros);

@@ -52,8 +52,8 @@ void Program::processDeprecated(vector<int> &program, vector<Macro> &macros) {
         for (int i = 0; i < (int) program.size();) {
             if (i + 1 < (int) program.size() && program[i] == bestOpcode && program[i + 1] == bestOpcode2) {
                 result.push_back(nextOpcode);
-                i += 2;
-            } else {
+            //     i += 2;
+            // } else {
                 result.push_back(program[i]);
                 i++;
             }
@@ -71,11 +71,11 @@ void Program::initProgram(unordered_map<size_t, int> *hashMap, vector<int> &prog
         if (firstNum > *biggestOpCode) *biggestOpCode = firstNum;
         if (secondNum > *biggestOpCode) *biggestOpCode = secondNum;
         const uint64_t neighboursHash = MyHash::getKeyFromPairs(firstNum, secondNum);
-        (*hashMap)[neighboursHash]++;
+        (*hashMap)[neighboursHash]++; // kdyz neexistuje tak rovnou nastavi 1
     }
 }
 
-void testPrint(unordered_map<size_t, int> hashmap, int nextOpCode) {
+void testPrint(const unordered_map<size_t, int> &hashmap, int nextOpCode) {
     std::cout << "nextOpCode: " << nextOpCode << std::endl;
     for (const auto &entry: hashmap) {
         int k1 = MyHash::getFirst(entry.first);
@@ -84,12 +84,28 @@ void testPrint(unordered_map<size_t, int> hashmap, int nextOpCode) {
     }
 }
 
+
+// Time complexity is O(M), where M <= N -1
+pair<unsigned long, int> Program::findMax(const unordered_map<size_t, int> &hashmap) {
+    int bestCount = 0;
+    pair<unsigned long, int> bestPair;
+
+    for (const auto &entry : hashmap) {
+        if (entry.second > bestCount) {
+            bestCount = entry.second;
+            bestPair = entry;
+        }
+    }
+    return bestPair;
+}
+
 void Program::processEfficient(vector<int> &program, vector<Macro> &macros) {
     if (program.size() < 2) return;
     int nextOpCode = 0;
     unordered_map<size_t, int> hashmap;
     initProgram(&hashmap, program, &nextOpCode); // O(n)
     testPrint(hashmap, nextOpCode);
+    pair<unsigned long, int> largestHash = findMax(hashmap);
 
 
 }
